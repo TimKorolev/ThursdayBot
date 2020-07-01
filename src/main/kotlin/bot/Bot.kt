@@ -1,6 +1,7 @@
 package bot
 
 import commands.Commands.*
+import commands.executers.RemindMeExecuter
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
@@ -22,10 +23,12 @@ class Bot : TelegramLongPollingBot() {
         var text = ""
 
         when (command.command) {
-            REMIND_ME -> text = "Напомню"
+            REMIND_ME ->
+
+                text = "Напомню"
             VOCABULARY -> text = "Запомнил"
         }
-        sendMsg(update.message.chatId.toString(), text)
+        sendMsg(update.message.chatId.toString(), text + RemindMeExecuter.execute(command.params))
     }
 
     /**
