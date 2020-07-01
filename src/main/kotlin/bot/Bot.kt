@@ -23,12 +23,12 @@ class Bot : TelegramLongPollingBot() {
         var text = ""
 
         when (command.command) {
-            REMIND_ME ->
-
+            REMIND_ME -> {
                 text = "Напомню"
+                sendMsg(update.message.chatId.toString(), """$text в ${RemindMeExecuter.execute(command.params)}""")
+            }
             VOCABULARY -> text = "Запомнил"
         }
-        sendMsg(update.message.chatId.toString(), """$text в ${RemindMeExecuter.execute(command.params)}""")
     }
 
     /**
