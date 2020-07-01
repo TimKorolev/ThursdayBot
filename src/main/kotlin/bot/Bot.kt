@@ -28,6 +28,7 @@ class Bot : TelegramLongPollingBot() {
             VOCABULARY.getCommandName() -> text = "Запомнил"
         }
         sendMsg(update.message.chatId.toString(), text)
+        sendMsg(update.message.chatId.toString(), command)
     }
 
     /**
