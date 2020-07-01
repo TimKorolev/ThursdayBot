@@ -1,5 +1,7 @@
 package bot
 
+import commands.Commands
+import commands.Commands.*
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
@@ -17,7 +19,13 @@ class Bot : TelegramLongPollingBot() {
      */
     override fun onUpdateReceived(update: Update) {
         val message = update.message.text
-        sendMsg(update.message.chatId.toString(), message)
+        var text = ""
+
+        when (message) {
+            REMIND_ME.getCommandName() -> text = "Напомню"
+            VOCABULARY.getCommandName() -> text = "Запомнил"
+        }
+        sendMsg(update.message.chatId.toString(), text)
     }
 
     /**
