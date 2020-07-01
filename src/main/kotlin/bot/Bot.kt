@@ -20,16 +20,17 @@ class Bot : TelegramLongPollingBot() {
     override fun onUpdateReceived(update: Update) {
         val message = update.message.text
         val command = getCommandAndParamsFromMessage(message)
-        var text = ""
+        lateinit var text: String
+        var chatId = update.message.chatId.toString()
 
         when (command.command) {
             REMIND_ME -> {
                 text = "Напомню"
-                sendMsg(update.message.chatId.toString(), """$text в ${RemindMeExecuter.execute(command.params)}""")
+                sendMsg(chatId, """$text в ${RemindMeExecuter.execute(command.params)}""")
             }
             VOCABULARY -> {
                 text = "Запомнил"
-                sendMsg(update.message.chatId.toString(), text)
+                sendMsg(chatId, text)
             }
         }
     }
