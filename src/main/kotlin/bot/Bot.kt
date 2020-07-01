@@ -20,7 +20,7 @@ class Bot : TelegramLongPollingBot() {
     override fun onUpdateReceived(update: Update) {
         val message = update.message.text
         val messageArray : List<String> = message.split(" ")
-        val command = messageArray[0] + " " + messageArray[0]
+        val command = messageArray[0] + " " + messageArray[1]
         var text = ""
 
         when (command) {
