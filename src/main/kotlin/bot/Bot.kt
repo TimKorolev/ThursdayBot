@@ -27,7 +27,10 @@ class Bot : TelegramLongPollingBot() {
                 text = "Напомню"
                 sendMsg(update.message.chatId.toString(), """$text в ${RemindMeExecuter.execute(command.params)}""")
             }
-            VOCABULARY -> text = "Запомнил"
+            VOCABULARY -> {
+                text = "Запомнил"
+                sendMsg(update.message.chatId.toString(), text)
+            }
         }
     }
 
