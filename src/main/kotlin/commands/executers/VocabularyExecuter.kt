@@ -4,7 +4,7 @@ import commands.ICommandExecuter
 import java.sql.Time
 import java.time.LocalDate
 
-object RemindMeExecuter : ICommandExecuter {
+object VocabularyExecuter : ICommandExecuter {
 
     override fun execute(params: List<String>): String {
         lateinit var date: String
@@ -24,5 +24,4 @@ object RemindMeExecuter : ICommandExecuter {
 
         return "Напомню $date в ${time.toString().dropLast(3)} $data"
     }
-
 }

@@ -2,6 +2,7 @@ package bot
 
 import commands.Commands.*
 import commands.executers.RemindMeExecuter
+import commands.executers.VocabularyExecuter
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
@@ -12,11 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import java.util.*
 
 class Bot : TelegramLongPollingBot() {
-    /**
-     * Метод для приема сообщений.
-     *
-     * @param update Содержит сообщение от пользователя.
-     */
+
     override fun onUpdateReceived(update: Update) {
         val message = update.message.text
         val command = getCommandAndParamsFromMessage(message)
@@ -25,22 +22,14 @@ class Bot : TelegramLongPollingBot() {
 
         when (command.command) {
             REMIND_ME -> {
-                text = "Напомню"
-                sendMsg(chatId, """$text в ${RemindMeExecuter.execute(command.params)}""")
+                sendMsg(chatId, RemindMeExecuter.execute(command.params))
             }
             VOCABULARY -> {
-                text = "Запомнил"
-                sendMsg(chatId, text)
+                sendMsg(chatId, VocabularyExecuter.execute(command.params))
             }
         }
     }
 
-    /**
-     * Метод для настройки сообщения и его отправки.
-     *
-     * @param chatId id чата
-     * @param s      Строка, которую необходимот отправить в качестве сообщения.
-     */
     @Synchronized
     fun sendMsg(chatId: String?, s: String?) {
         val sendMessage = SendMessage()
