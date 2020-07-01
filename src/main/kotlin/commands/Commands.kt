@@ -1,13 +1,15 @@
 package commands
 
-enum class Commands(
-    private val commandName : String) {
+enum class Commands(_commandName: String) {
 
     REMIND_ME("Напомни мне"),
     VOCABULARY("Запомни слово");
 
-    fun getCommandName(): String {
-        return commandName;
-    }
+    val commandName: String = _commandName
 
+    companion object {
+        fun getCommandByName(name: String?): Commands {
+            return values().asSequence().find { command -> command.commandName == name }!!
+        }
+    }
 }
