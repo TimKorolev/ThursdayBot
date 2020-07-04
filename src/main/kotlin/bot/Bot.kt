@@ -22,10 +22,10 @@ class Bot : TelegramLongPollingBot() {
 
         when (command.command) {
             REMIND_ME -> {
-                sendMsg(chatId, RemindMeExecuter.execute(command.params))
+                sendMsg(chatId, RemindMeExecuter.setChatId(chatId).execute(command.params))
             }
             VOCABULARY -> {
-                sendMsg(chatId, VocabularyExecuter.execute(command.params))
+                sendMsg(chatId, VocabularyExecuter.setChatId(chatId).execute(command.params))
             }
         }
     }
