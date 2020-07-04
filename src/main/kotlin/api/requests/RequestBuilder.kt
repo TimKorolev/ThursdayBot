@@ -20,8 +20,8 @@ object RequestBuilder {
             DELETE -> HttpDelete()
             POST -> {
                 var httpRequestPost = HttpPost("https://api.eu-gb.language-translator.watson.cloud.ibm.com/instances/3e7dfd9e-ec39-42d1-a55f-98888ce2c6dc")
-                httpRequestPost.addHeader(request.headers)
-                httpRequestPost.setEntity(request.entity)
+//                httpRequestPost.addHeader(request.headers)
+//                httpRequestPost.setEntity(request.entity)
                 httpRequestBase = httpRequestPost
             }
         }
