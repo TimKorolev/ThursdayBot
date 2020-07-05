@@ -6,9 +6,9 @@ import java.time.LocalDate
 
 object RemindMeExecuter : ICommandExecuter {
 
-    private lateinit var chatId: String
+    override lateinit var chatId: String
 
-    fun setChatId(_chatId : String):RemindMeExecuter{
+    fun setChatId(_chatId: String): RemindMeExecuter {
         chatId = _chatId
         return this
     }

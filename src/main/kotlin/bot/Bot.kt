@@ -1,6 +1,8 @@
 package bot
 
 import commands.Commands.*
+import commands.executers.GetNLastWordsExecuter
+import commands.executers.HelpExecuter
 import commands.executers.RemindMeExecuter
 import commands.executers.VocabularyExecuter
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -18,7 +20,7 @@ class Bot : TelegramLongPollingBot() {
         val message = update.message.text
         val command = getCommandAndParamsFromMessage(message)
         lateinit var text: String
-        var chatId = update.message.chatId.toString()
+        val chatId = update.message.chatId.toString()
 
         when (command.command) {
             REMIND_ME -> {
@@ -26,6 +28,12 @@ class Bot : TelegramLongPollingBot() {
             }
             VOCABULARY -> {
                 sendMsg(chatId, VocabularyExecuter.setChatId(chatId).execute(command.params))
+            }
+            GET_N_LAST_WORDS -> {
+                sendMsg(chatId, GetNLastWordsExecuter.setChatId(chatId).execute(command.params))
+            }
+            HELP -> {
+                sendMsg(chatId, HelpExecuter.setChatId(chatId).execute(command.params))
             }
         }
     }
@@ -46,7 +54,6 @@ class Bot : TelegramLongPollingBot() {
 
     @Synchronized
     fun setButtons(sendMessage: SendMessage) {
-        // Создаем клавиуатуру
         val replyKeyboardMarkup = ReplyKeyboardMarkup()
         sendMessage.replyMarkup = replyKeyboardMarkup
         replyKeyboardMarkup.selective = true
@@ -59,7 +66,7 @@ class Bot : TelegramLongPollingBot() {
         // Первая строчка клавиатуры
         val keyboardFirstRow = KeyboardRow()
         // Добавляем кнопки в первую строчку клавиатуры
-        keyboardFirstRow.add(KeyboardButton("Привет"))
+        keyboardFirstRow.add(KeyboardButton("Покажи последние"))
 
         // Вторая строчка клавиатуры
         val keyboardSecondRow = KeyboardRow()
