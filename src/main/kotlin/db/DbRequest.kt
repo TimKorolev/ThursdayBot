@@ -23,6 +23,24 @@ object DbRequest {
             stringResult += result?.getString("translate") + ",\n"
         }
 
+        return stringResult
+    }
+
+    fun getWordsRating(chatId: String, limit: String): String {
+        if (!isUserExist(chatId)) {
+            addUser(chatId)
+        }
+        val result =
+            DbHelper.getConnection(HerokuDb.url)
+                ?.prepareStatement("select word,translate from words where chat_id = '$chatId' order by rating desc limit $limit")
+                ?.executeQuery()
+
+        var stringResult = ""
+
+        while (result!!.next()) {
+            stringResult += result?.getString("word") + " - "
+            stringResult += result?.getString("translate") + ",\n"
+        }
 
         return stringResult
     }
@@ -39,8 +57,9 @@ object DbRequest {
             "Запомню $word как '$translate'"
         } else {
             DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
-                "update words set last_update_date = '$actualDate'"
+                "update words set last_update_date = '$actualDate' where word = '$word'"
             )?.execute()
+            incrementRating(word, chatId)
             "Слово $word уже встречалось, означает '$translate'"
         }
     }
@@ -78,4 +97,42 @@ object DbRequest {
 
         return rows > 0
     }
+
+    private fun incrementRating(word: String, chatId: String) {
+        var rating = getRating(word, chatId)
+        var intRating = rating.toInt()
+
+        intRating++
+        rating = intRating.toString()
+
+        DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
+            "update words set rating = '$rating' where word = '$word'"
+        )?.execute()
+    }
+
+    private fun decrementRating(word: String, chatId: String) {
+        var rating = getRating(word, chatId)
+        var intRating = rating.toInt()
+
+        if (intRating == 0) {
+            return
+        }
+
+        intRating--
+        rating = intRating.toString()
+
+        DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
+            "update words set rating = '$rating' where word = '$word'"
+        )?.execute()
+    }
+
+    private fun getRating(word: String, chatId: String): String {
+        val result = DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
+            "select rating from words where word = '$word' and chat_id = '$chatId'"
+        )?.executeQuery()
+
+        result!!.next()
+        return result.getString("rating").toString()
+    }
+
 }

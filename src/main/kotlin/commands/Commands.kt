@@ -5,7 +5,8 @@ enum class Commands(_commandName: String) {
     REMIND_ME("Напомни мне"),
     VOCABULARY("Запомни слово"),
     HELP("Помощь"),
-    GET_N_LAST_WORDS("Покажи последние");
+    GET_N_LAST_WORDS("Покажи последние"),
+    GET_WORDS_RATING("Покажи рейтинг");
 
     val commandName: String = _commandName
 

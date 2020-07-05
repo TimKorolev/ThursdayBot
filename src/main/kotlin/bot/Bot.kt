@@ -1,10 +1,7 @@
 package bot
 
 import commands.Commands.*
-import commands.executers.GetNLastWordsExecuter
-import commands.executers.HelpExecuter
-import commands.executers.RemindMeExecuter
-import commands.executers.VocabularyExecuter
+import commands.executers.*
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
@@ -31,6 +28,9 @@ class Bot : TelegramLongPollingBot() {
             }
             GET_N_LAST_WORDS -> {
                 sendMsg(chatId, GetNLastWordsExecuter.setChatId(chatId).execute(command.params))
+            }
+            GET_WORDS_RATING -> {
+                sendMsg(chatId, GetWordsRatingExecuter.setChatId(chatId).execute(command.params))
             }
             HELP -> {
                 sendMsg(chatId, HelpExecuter.setChatId(chatId).execute(command.params))
