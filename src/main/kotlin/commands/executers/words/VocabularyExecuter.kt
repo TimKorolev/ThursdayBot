@@ -1,4 +1,4 @@
-package commands.executers
+package commands.executers.words
 
 import com.ibm.cloud.sdk.core.http.HttpConfigOptions
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
@@ -39,7 +39,9 @@ object VocabularyExecuter : ICommandExecuter {
             "\"\n" +
                     "    }"
         )[0]
-        return DbRequest.addWordAndTranslate(word, translate, chatId)
+        return DbRequest.addWordAndTranslate(word, translate,
+            chatId
+        )
     }
 
 }

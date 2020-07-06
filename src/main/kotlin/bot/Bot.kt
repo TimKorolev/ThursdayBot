@@ -2,6 +2,11 @@ package bot
 
 import commands.Commands.*
 import commands.executers.*
+import commands.executers.alcohol.AlcoholExecuter
+import commands.executers.alcohol.AlcoholRatingExecuter
+import commands.executers.words.GetNLastWordsExecuter
+import commands.executers.words.GetWordsRatingExecuter
+import commands.executers.words.VocabularyExecuter
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
@@ -31,6 +36,12 @@ class Bot : TelegramLongPollingBot() {
             }
             GET_WORDS_RATING -> {
                 sendMsg(chatId, GetWordsRatingExecuter.setChatId(chatId).execute(command.params))
+            }
+            ALCOHOL -> {
+                sendMsg(chatId, AlcoholExecuter.setChatId(chatId).execute(command.params))
+            }
+            ALCOHOL_RATING -> {
+                sendMsg(chatId, AlcoholRatingExecuter.setChatId(chatId).execute(command.params))
             }
             HELP -> {
                 sendMsg(chatId, HelpExecuter.setChatId(chatId).execute(command.params))

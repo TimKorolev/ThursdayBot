@@ -7,6 +7,36 @@ import java.time.format.DateTimeFormatter
 
 object DbRequest {
 
+    fun addAlcohol(name: String, rating: Int, description: String, chatId: String): String {
+        if (!isUserExist(chatId)) {
+            addUser(chatId)
+        }
+
+        return if (!isAlcoholExist(name, chatId)) {
+            DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
+                "insert into alcohol(name, rating, description) values ('$name','$rating','$description','$chatId')"
+            )?.execute()
+            "Запомню $name"
+        } else {
+            "$name уже встречался в коллекции"
+        }
+    }
+
+    fun getAlcoholRating(chatId: String): String {
+        val result = DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
+            "select name, rating, description from beer where chat_id = '$chatId' order by rating desc"
+        )?.executeQuery()
+
+        var stringResult = ""
+
+        while (result!!.next()) {
+            stringResult += result?.getString("word") + " - "
+            stringResult += result?.getString("translate") + ",\n"
+        }
+
+        return stringResult
+    }
+
     fun getNLastWords(chatId: String, limit: String): String {
         if (!isUserExist(chatId)) {
             addUser(chatId)
@@ -98,6 +128,20 @@ object DbRequest {
         return rows > 0
     }
 
+    private fun isAlcoholExist(name: String, chatId: String): Boolean {
+        var rows = 0
+        val result =
+            DbHelper.getConnection(HerokuDb.url)
+                ?.prepareStatement("select * from alcohol where name = '$name' and chat_id = '$chatId'")
+                ?.executeQuery()
+
+        while (result!!.next()) {
+            rows++
+        }
+
+        return rows > 0
+    }
+
     private fun incrementRating(word: String, chatId: String) {
         var rating = getRating(word, chatId)
         var intRating = rating.toInt()
@@ -133,6 +177,10 @@ object DbRequest {
 
         result!!.next()
         return result.getString("rating").toString()
+    }
+
+    fun addAlcohol(name: String, rating: Int, description: String) {
+
     }
 
 }

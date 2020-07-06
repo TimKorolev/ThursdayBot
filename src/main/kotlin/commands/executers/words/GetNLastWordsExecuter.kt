@@ -1,14 +1,14 @@
-package commands.executers
+package commands.executers.words
 
 import commands.ICommandExecuter
 import db.DbRequest
 
 
-object GetWordsRatingExecuter : ICommandExecuter {
+object GetNLastWordsExecuter : ICommandExecuter {
 
     override lateinit var chatId: String
 
-    fun setChatId(_chatId: String): GetWordsRatingExecuter {
+    fun setChatId(_chatId: String): GetNLastWordsExecuter {
         chatId = _chatId
         return this
     }
@@ -18,7 +18,7 @@ object GetWordsRatingExecuter : ICommandExecuter {
         if (params.isNotEmpty()){
             limit = params[0]
         }
-        return DbRequest.getWordsRating(chatId, limit)
+        return DbRequest.getNLastWords(chatId, limit)
     }
 
 }
