@@ -16,8 +16,8 @@ object AlcoholExecuter : ICommandExecuter {
     override fun execute(params: List<String>): String {
         val name = params[0]
         val rating = params[1].toInt()
-        params.drop(2)
-        val description = params.toString().replace(",", "").replace("[", "").replace("]", "")
+        val newParams = params.drop(2)
+        val description = newParams.toString().replace(",", "").replace("[", "").replace("]", "")
         return DbRequest.addAlcohol(name, rating, description, chatId)
     }
 }

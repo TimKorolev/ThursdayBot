@@ -14,7 +14,6 @@ object AlcoholRatingExecuter : ICommandExecuter {
     }
 
     override fun execute(params: List<String>) : String  {
-        val description  = params.toString().replace(",", "").replace("[", "").replace("]", "")
         return DbRequest.getAlcoholRating(chatId)
     }
 }

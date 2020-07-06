@@ -14,27 +14,27 @@ object DbRequest {
 
         return if (!isAlcoholExist(name, chatId)) {
             DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
-                "insert into alcohol(name, rating, description) values ('$name','$rating','$description','$chatId')"
+                "insert into alcohol(name, rating, description, chat_id) values ('$name','$rating','$description','$chatId')"
             )?.execute()
             "Запомню $name"
         } else {
-            "$name уже встречался в коллекции"
+            "$name уже коллекции"
         }
     }
 
     fun getAlcoholRating(chatId: String): String {
         val result = DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
-            "select name, rating, description from beer where chat_id = '$chatId' order by rating desc"
+            "select name, rating from alcohol where chat_id = '$chatId' order by rating desc"
         )?.executeQuery()
 
         var stringResult = ""
 
         while (result!!.next()) {
-            stringResult += result?.getString("word") + " - "
-            stringResult += result?.getString("translate") + ",\n"
+            stringResult += result?.getString("name") + " - "
+            stringResult += result?.getString("rating") + ",\n"
         }
 
-        return stringResult
+        return stringResult.substring(0, stringResult.length - 2)
     }
 
     fun getNLastWords(chatId: String, limit: String): String {
@@ -72,7 +72,7 @@ object DbRequest {
             stringResult += result?.getString("translate") + ",\n"
         }
 
-        return stringResult
+        return stringResult.substring(0, stringResult.length - 2)
     }
 
     fun addWordAndTranslate(word: String, translate: String, chatId: String): String {
