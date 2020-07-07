@@ -5,6 +5,7 @@ enum class Commands(_commandName: String) {
     REMIND_ME("Напомни мне"),
     VOCABULARY("Запомни слово"),
     ALCOHOL("Запомни алкоголь"),
+    GET_ALCOHOL("Найди алкоголь"),
     ALCOHOL_RATING("Алкогольный рейтинг"),
     HELP("Помощь"),
     GET_N_LAST_WORDS("Покажи последние"),

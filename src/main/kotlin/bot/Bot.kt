@@ -4,6 +4,7 @@ import commands.Commands.*
 import commands.executers.*
 import commands.executers.alcohol.AlcoholExecuter
 import commands.executers.alcohol.AlcoholRatingExecuter
+import commands.executers.alcohol.GetAlcoholExecuter
 import commands.executers.words.GetNLastWordsExecuter
 import commands.executers.words.GetWordsRatingExecuter
 import commands.executers.words.VocabularyExecuter
@@ -39,6 +40,9 @@ class Bot : TelegramLongPollingBot() {
             }
             ALCOHOL -> {
                 sendMsg(chatId, AlcoholExecuter.setChatId(chatId).execute(command.params))
+            }
+            GET_ALCOHOL -> {
+                sendMsg(chatId, GetAlcoholExecuter.setChatId(chatId).execute(command.params))
             }
             ALCOHOL_RATING -> {
                 sendMsg(chatId, AlcoholRatingExecuter.setChatId(chatId).execute(command.params))
