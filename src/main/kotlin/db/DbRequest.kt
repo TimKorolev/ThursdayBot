@@ -27,7 +27,14 @@ object DbRequest {
             "select name, rating from alcohol where chat_id = '$chatId' and name = '$name'"
         )?.executeQuery()
 
-        return result?.getString("name").toString()
+        var stringResult = ""
+
+        while (result!!.next()) {
+            stringResult += result?.getString("name") + " - "
+            stringResult += result?.getString("rating")
+        }
+
+        return stringResult
     }
 
     fun getAlcoholRating(chatId: String): String {

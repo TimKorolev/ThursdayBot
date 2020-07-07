@@ -13,6 +13,11 @@ object GetAlcoholExecuter : ICommandExecuter {
     }
 
     override fun execute(params: List<String>): String {
-        return DbRequest.getAlcohol(params[0], chatId)
+        val result = DbRequest.getAlcohol(params[0], chatId)
+        return if (result == "") {
+            "Нет в коллекции"
+        } else {
+            result
+        }
     }
 }
