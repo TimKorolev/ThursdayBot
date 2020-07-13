@@ -195,8 +195,4 @@ object DbRequest {
         return result.getString("rating").toString()
     }
 
-    fun addAlcohol(name: String, rating: Int, description: String) {
-
-    }
-
 }

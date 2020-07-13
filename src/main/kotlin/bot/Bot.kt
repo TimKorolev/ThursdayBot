@@ -22,7 +22,6 @@ class Bot : TelegramLongPollingBot() {
     override fun onUpdateReceived(update: Update) {
         val message = update.message.text
         val command = getCommandAndParamsFromMessage(message)
-        lateinit var text: String
         val chatId = update.message.chatId.toString()
 
         when (command.command) {
@@ -81,6 +80,7 @@ class Bot : TelegramLongPollingBot() {
         // Первая строчка клавиатуры
         val keyboardFirstRow = KeyboardRow()
         // Добавляем кнопки в первую строчку клавиатуры
+        keyboardFirstRow.add(KeyboardButton("Покажи последние"))
         keyboardFirstRow.add(KeyboardButton("Покажи последние"))
 
         // Вторая строчка клавиатуры

@@ -6,6 +6,8 @@ import com.ibm.watson.language_translator.v3.LanguageTranslator
 import com.ibm.watson.language_translator.v3.model.TranslateOptions
 import commands.ICommandExecuter
 import db.DbRequest
+import property.Property
+import property.Property.Companion.TRANSLATOR_URL
 
 
 object VocabularyExecuter : ICommandExecuter {
@@ -19,10 +21,9 @@ object VocabularyExecuter : ICommandExecuter {
 
     override fun execute(params: List<String>): String {
         val word = params.toString().replace(",", "").replace("[", "").replace("]", "")
-        val authenticator = IamAuthenticator("xvA0hvpQ9BE1hnU4IRubfQuFYuUBJL6Et22f-esf4jN-")
+        val authenticator = IamAuthenticator(Property.TRANSLATOR_KEY)
         val languageTranslator = LanguageTranslator("2018-05-01", authenticator)
-        languageTranslator.serviceUrl =
-            "https://api.eu-gb.language-translator.watson.cloud.ibm.com/instances/3e7dfd9e-ec39-42d1-a55f-98888ce2c6dc"
+        languageTranslator.serviceUrl = TRANSLATOR_URL
 
         val configOptions = HttpConfigOptions.Builder()
             .disableSslVerification(true)
