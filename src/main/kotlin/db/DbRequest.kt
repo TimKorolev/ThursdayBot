@@ -24,7 +24,7 @@ object DbRequest {
 
     fun getAlcohol(name: String, chatId: String): String {
         val result = DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
-            "select name, rating from alcohol where chat_id = '$chatId' and name = '$name'"
+            "select name, rating, description from alcohol where chat_id = '$chatId' and name = '$name'"
         )?.executeQuery()
 
         var stringResult = ""
