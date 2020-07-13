@@ -30,8 +30,9 @@ object DbRequest {
         var stringResult = ""
 
         while (result!!.next()) {
-            stringResult += result?.getString("name") + " - "
-            stringResult += result?.getString("rating")
+            stringResult += result.getString("name") + " - "
+            stringResult += result.getString("rating") + ", "
+            stringResult += result.getString("description")
         }
 
         return stringResult
