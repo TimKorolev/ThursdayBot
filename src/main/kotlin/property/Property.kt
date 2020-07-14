@@ -2,11 +2,11 @@ package property
 
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 import java.util.*
 
 
 class Property {
+
     companion object {
         lateinit var TRANSLATOR_URL: String
         lateinit var TRANSLATOR_KEY: String
@@ -16,12 +16,6 @@ class Property {
         lateinit var HEROKU_PORT: String
         lateinit var HEROKU_PASSWORD: String
         lateinit var HEROKU_HOST: String
-
-        @Throws(IOException::class)
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Property()
-        }
     }
 
     init {
