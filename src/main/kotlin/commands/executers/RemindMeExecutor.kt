@@ -1,17 +1,10 @@
 package commands.executers
 
-import commands.ICommandExecuter
+import commands.ICommandExecutor
 import java.sql.Time
 import java.time.LocalDate
 
-object RemindMeExecuter : ICommandExecuter {
-
-    override lateinit var chatId: String
-
-    fun setChatId(_chatId: String): RemindMeExecuter {
-        chatId = _chatId
-        return this
-    }
+object RemindMeExecutor : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
         lateinit var date: String

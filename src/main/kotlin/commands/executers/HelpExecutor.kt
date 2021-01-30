@@ -1,17 +1,9 @@
 package commands.executers
 
-import commands.ICommandExecuter
-import db.DbRequest
+import commands.ICommandExecutor
 
 
-object HelpExecuter : ICommandExecuter {
-
-    override lateinit var chatId: String
-
-    fun setChatId(_chatId: String): HelpExecuter {
-        chatId = _chatId
-        return this
-    }
+object HelpExecutor : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
 

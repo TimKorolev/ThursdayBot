@@ -2,6 +2,7 @@ package commands
 
 enum class Commands(_commandName: String) {
 
+    START_QUESTIONNAIRE("Начать опрос"),
     REMIND_ME("Напомни мне"),
     VOCABULARY("Запомни слово"),
     ALCOHOL("Запомни алкоголь"),

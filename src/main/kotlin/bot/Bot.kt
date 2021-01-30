@@ -1,19 +1,18 @@
 package bot
 
 import commands.Commands.*
-import commands.executers.*
-import commands.executers.alcohol.AlcoholExecuter
-import commands.executers.alcohol.AlcoholRatingExecuter
-import commands.executers.alcohol.GetAlcoholExecuter
-import commands.executers.words.GetNLastWordsExecuter
-import commands.executers.words.GetWordsRatingExecuter
-import commands.executers.words.VocabularyExecuter
+import commands.executers.HelpExecutor
+import commands.executers.RemindMeExecutor
+import commands.executers.alcohol.AlcoholExecutor
+import commands.executers.alcohol.AlcoholRatingExecutor
+import commands.executers.alcohol.GetAlcoholExecutor
+import commands.executers.words.GetNLastWordsExecutor
+import commands.executers.words.GetWordsRatingExecutor
+import commands.executers.words.VocabularyExecutor
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -26,32 +25,19 @@ class Bot : TelegramLongPollingBot() {
         val command = getCommandAndParamsFromMessage(message)
         val chatId = update.message.chatId.toString()
 
-        when (command.command) {
-            REMIND_ME -> {
-                sendMsg(chatId, RemindMeExecuter.setChatId(chatId).execute(command.params))
-            }
-            VOCABULARY -> {
-                sendMsg(chatId, VocabularyExecuter.setChatId(chatId).execute(command.params))
-            }
-            GET_N_LAST_WORDS -> {
-                sendMsg(chatId, GetNLastWordsExecuter.setChatId(chatId).execute(command.params))
-            }
-            GET_WORDS_RATING -> {
-                sendMsg(chatId, GetWordsRatingExecuter.setChatId(chatId).execute(command.params))
-            }
-            ALCOHOL -> {
-                sendMsg(chatId, AlcoholExecuter.setChatId(chatId).execute(command.params))
-            }
-            GET_ALCOHOL -> {
-                sendMsg(chatId, GetAlcoholExecuter.setChatId(chatId).execute(command.params))
-            }
-            ALCOHOL_RATING -> {
-                sendMsg(chatId, AlcoholRatingExecuter.setChatId(chatId).execute(command.params))
-            }
-            HELP -> {
-                sendMsg(chatId, HelpExecuter.setChatId(chatId).execute(command.params))
-            }
-        }
+        sendMsg(
+            chatId, when (command.command) {
+                REMIND_ME -> RemindMeExecutor
+                VOCABULARY -> VocabularyExecutor
+                GET_N_LAST_WORDS -> GetNLastWordsExecutor
+                GET_WORDS_RATING -> GetWordsRatingExecutor
+                ALCOHOL -> AlcoholExecutor
+                GET_ALCOHOL -> GetAlcoholExecutor
+                ALCOHOL_RATING -> AlcoholRatingExecutor
+                HELP -> HelpExecutor
+                else -> HelpExecutor
+            }.setChatId(chatId).execute(command.params)
+        )
     }
 
     @Synchronized

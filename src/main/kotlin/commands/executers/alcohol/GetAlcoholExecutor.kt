@@ -1,16 +1,10 @@
 package commands.executers.alcohol
 
-import commands.ICommandExecuter
+import commands.ICommandExecutor
+import commands.executers.BaseExecutor
 import db.DbRequest
 
-object GetAlcoholExecuter : ICommandExecuter {
-
-    override lateinit var chatId: String
-
-    fun setChatId(_chatId: String): GetAlcoholExecuter {
-        chatId = _chatId
-        return this
-    }
+object GetAlcoholExecutor : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
         val result = DbRequest.getAlcohol(params[0], chatId)

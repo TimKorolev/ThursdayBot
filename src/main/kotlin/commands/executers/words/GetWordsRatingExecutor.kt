@@ -1,17 +1,11 @@
 package commands.executers.words
 
-import commands.ICommandExecuter
+import commands.ICommandExecutor
+import commands.executers.BaseExecutor
 import db.DbRequest
 
 
-object GetWordsRatingExecuter : ICommandExecuter {
-
-    override lateinit var chatId: String
-
-    fun setChatId(_chatId: String): GetWordsRatingExecuter {
-        chatId = _chatId
-        return this
-    }
+object GetWordsRatingExecutor : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
         var limit = "10"

@@ -4,20 +4,14 @@ import com.ibm.cloud.sdk.core.http.HttpConfigOptions
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
 import com.ibm.watson.language_translator.v3.LanguageTranslator
 import com.ibm.watson.language_translator.v3.model.TranslateOptions
-import commands.ICommandExecuter
+import commands.ICommandExecutor
+import commands.executers.BaseExecutor
 import db.DbRequest
 import property.Property
 import property.Property.Companion.TRANSLATOR_URL
 
 
-object VocabularyExecuter : ICommandExecuter {
-
-    override lateinit var chatId: String
-
-    fun setChatId(_chatId: String): VocabularyExecuter {
-        chatId = _chatId
-        return this
-    }
+object VocabularyExecutor : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
         val word = params.toString().replace(",", "").replace("[", "").replace("]", "")
@@ -40,7 +34,8 @@ object VocabularyExecuter : ICommandExecuter {
             "\"\n" +
                     "    }"
         )[0]
-        return DbRequest.addWordAndTranslate(word, translate,
+        return DbRequest.addWordAndTranslate(
+            word, translate,
             chatId
         )
     }
