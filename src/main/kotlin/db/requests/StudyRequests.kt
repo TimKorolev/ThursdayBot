@@ -15,7 +15,7 @@ object StudyRequests {
             addUser(chatId)
         }
 
-        val selectionSize = ceil(DbRequest.getNumberOfWord(chatId) * 0.1).toInt()
+        val selectionSize = ceil(DbRequest.getNumberOfWord(chatId) * 0.1).toInt() + 1
         val result =
             DbHelper.getConnection(Connections.HerokuDb.url)
                 ?.prepareStatement("select word,translate from words where chat_id = '$chatId' order by rating limit $selectionSize")

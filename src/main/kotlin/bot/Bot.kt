@@ -1,5 +1,7 @@
 package bot
 
+import bot.BotContext.deletePollCounter
+import bot.BotContext.incrementPollCounter
 import commands.Commands.*
 import commands.executers.BaseExecutor
 import commands.executers.HelpExecutor
@@ -37,7 +39,12 @@ class Bot : TelegramLongPollingBot() {
                 decrementRating(update.poll.options[update.poll.correctOptionId].text, chatId)
                 decrementRating(update.poll.options.filter { option -> option.voterCount == 1 }[0].text, chatId)
             }
-
+            if (BotContext.getPollCounter(chatId) < 5) {
+                incrementPollCounter(chatId)
+                sendPoll(chatId)
+            } else {
+                deletePollCounter(chatId)
+            }
             return
         }
 
@@ -51,10 +58,8 @@ class Bot : TelegramLongPollingBot() {
             GET_N_LAST_WORDS -> sendMsg(chatId, GetNLastWordsExecutor, command.params)
             GET_WORDS_RATING -> sendMsg(chatId, GetWordsRatingExecutor, command.params)
             START_QUESTIONNAIRE -> {
-                var i = 5
-                while (i != 0){
-                    sendPoll(chatId)
-                i--}
+                BotContext.addPollCounter(chatId)
+                sendPoll(chatId)
             }
             else -> sendMsg(chatId, HelpExecutor, command.params)
         }
