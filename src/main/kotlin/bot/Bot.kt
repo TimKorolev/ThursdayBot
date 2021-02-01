@@ -4,12 +4,14 @@ import commands.Commands.*
 import commands.executers.BaseExecutor
 import commands.executers.HelpExecutor
 import commands.executers.RemindMeExecutor
-import commands.executers.alcohol.AlcoholExecutor
-import commands.executers.alcohol.AlcoholRatingExecutor
-import commands.executers.alcohol.GetAlcoholExecutor
 import commands.executers.words.GetNLastWordsExecutor
 import commands.executers.words.GetWordsRatingExecutor
 import commands.executers.words.VocabularyExecutor
+import db.requests.RatingRequests.decrementRating
+import db.requests.RatingRequests.incrementRating
+import db.requests.StudyRequests.getStudyWord
+import db.requests.StudyRequests.getStudyWords
+import db.requests.UserRequests.incrementUserRating
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -19,15 +21,24 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import java.util.*
+import kotlin.random.Random
 
 class Bot : TelegramLongPollingBot() {
 
     override fun onUpdateReceived(update: Update) {
 
         if (!update.hasMessage() && update.hasPoll()) {
-            if (update.pollAnswer == null) {
-                print("fooooo")
+            val chatId = BotContext.getPollChatId(update)
+
+            if (update.poll.options[update.poll.correctOptionId].voterCount == 1) {
+                incrementRating(update.poll.options[update.poll.correctOptionId].text, chatId)
+                incrementUserRating(chatId)
+            } else {
+                decrementRating(update.poll.options[update.poll.correctOptionId].text, chatId)
+                decrementRating(update.poll.options.filter { option -> option.voterCount == 1 }[0].text, chatId)
             }
+
+            return
         }
 
         val chatId = update.message.chatId.toString()
@@ -39,10 +50,12 @@ class Bot : TelegramLongPollingBot() {
             VOCABULARY -> sendMsg(chatId, VocabularyExecutor, command.params)
             GET_N_LAST_WORDS -> sendMsg(chatId, GetNLastWordsExecutor, command.params)
             GET_WORDS_RATING -> sendMsg(chatId, GetWordsRatingExecutor, command.params)
-            ALCOHOL -> sendMsg(chatId, AlcoholExecutor, command.params)
-            GET_ALCOHOL -> sendMsg(chatId, GetAlcoholExecutor, command.params)
-            START_QUESTIONNAIRE -> sendPoll(chatId)
-            ALCOHOL_RATING -> sendMsg(chatId, AlcoholRatingExecutor, command.params)
+            START_QUESTIONNAIRE -> {
+                var i = 5
+                while (i != 0){
+                    sendPoll(chatId)
+                i--}
+            }
             else -> sendMsg(chatId, HelpExecutor, command.params)
         }
     }
@@ -65,20 +78,32 @@ class Bot : TelegramLongPollingBot() {
 
     @Synchronized
     fun sendPoll(chatId: String) {
-        val word = "Let"
-        val options = listOf("быть", "пусть", "грусть")
+        val studyWord = getStudyWord(chatId)
+        var studyWords = getStudyWords(chatId)
+
+        while (studyWord in studyWords) {
+            studyWords = getStudyWords(chatId)
+        }
+
+        val rightAnswer = Random.nextInt(0, studyWords.size)
+
+        studyWords.add(rightAnswer, studyWord)
+
         val sendPoll = SendPoll()
         sendPoll.chatId = chatId
-        sendPoll.question = "Translate the word '${word}'"
-        sendPoll.options = options
+        sendPoll.question = "Translate the word '${studyWord.word}'"
+        sendPoll.options = studyWords.map { studyWord -> studyWord.translate }
         sendPoll.type = "quiz"
-        sendPoll.correctOptionId = 2
+        sendPoll.correctOptionId = rightAnswer
         sendPoll.openPeriod = 60
+        sendPoll.replyMarkup
+
+        BotContext.addPoll(sendPoll)
 
 //        val inlineKeyboardMarkup = InlineKeyboardMarkup()
 //
 //        val keyboard = mutableListOf<InlineKeyboardButton>()
-//        options.forEach { option ->
+//        studyWords.map { studyWord -> studyWord.translate }.forEach { option ->
 //            var inlineKeyboardButton = InlineKeyboardButton(option)
 //            inlineKeyboardButton.callbackData = option
 //            keyboard.add(inlineKeyboardButton)

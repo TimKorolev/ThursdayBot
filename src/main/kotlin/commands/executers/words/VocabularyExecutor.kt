@@ -6,7 +6,7 @@ import com.ibm.watson.language_translator.v3.LanguageTranslator
 import com.ibm.watson.language_translator.v3.model.TranslateOptions
 import commands.ICommandExecutor
 import commands.executers.BaseExecutor
-import db.DbRequest
+import db.requests.DbRequest
 import property.Property
 import property.Property.Companion.TRANSLATOR_URL
 

@@ -2,7 +2,7 @@ package commands.executers.words
 
 import commands.ICommandExecutor
 import commands.executers.BaseExecutor
-import db.DbRequest
+import db.requests.DbRequest
 
 
 object GetNLastWordsExecutor : BaseExecutor(), ICommandExecutor {
