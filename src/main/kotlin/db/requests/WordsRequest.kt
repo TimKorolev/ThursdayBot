@@ -1,52 +1,26 @@
 package db.requests
 
+import com.opencsv.CSVReader
+import constant.UserRatingDependency
 import db.Connections.*
 import db.DbHelper
+import db.entities.StudyWord
+import db.requests.RatingRequests.decrementRating
+import db.requests.UpdateDateRequests.updateLastUpdateDate
+import db.requests.UpdateDateRequests.updateUnavailableTo
 import db.requests.UserRequests.addUser
+import db.requests.UserRequests.getUserRating
 import db.requests.UserRequests.isUserExist
+import org.telegram.telegrambots.meta.api.objects.User
+import java.io.File
+import java.io.FileReader
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-object DbRequest {
-
-    fun getNLastWords(chatId: String, limit: String): String {
-        if (!isUserExist(chatId)) {
-            addUser(chatId)
-        }
-        val result =
-            DbHelper.getConnection(HerokuDb.url)
-                ?.prepareStatement("select word,translate from words where chat_id = '$chatId' order by id desc limit $limit")
-                ?.executeQuery()
-
-        var stringResult = ""
-
-        while (result!!.next()) {
-            stringResult += result?.getString("word") + " - "
-            stringResult += result?.getString("translate") + ",\n"
-        }
-
-        return stringResult
-    }
-
-    fun getWordsRating(chatId: String, limit: String): String {
-        if (!isUserExist(chatId)) {
-            addUser(chatId)
-        }
-        val result =
-            DbHelper.getConnection(HerokuDb.url)
-                ?.prepareStatement("select word,translate from words where chat_id = '$chatId' order by rating desc limit $limit")
-                ?.executeQuery()
-
-        var stringResult = ""
-
-        while (result!!.next()) {
-            stringResult += result?.getString("word") + " - "
-            stringResult += result?.getString("translate") + ",\n"
-        }
-
-        return stringResult.substring(0, stringResult.length - 2)
-    }
+object WordsRequest {
 
     fun addWordAndTranslate(word: String, translate: String, chatId: String): String {
         if (!isUserExist(chatId)) {
@@ -59,10 +33,9 @@ object DbRequest {
             )?.execute()
             "Запомню $word как '$translate'"
         } else {
-            DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
-                "update words set last_update_date = '$actualDate' where word = '$word'"
-            )?.execute()
-            RatingRequests.incrementRating(word, chatId)
+            updateLastUpdateDate(word, chatId)
+            decrementRating(word, chatId)
+            updateUnavailableTo(word, chatId)
             "Слово $word уже встречалось, означает '$translate'"
         }
     }
@@ -91,4 +64,33 @@ object DbRequest {
         return rows > 0
     }
 
+    fun addWordFromWord10000(chatId: String) {
+        val fileReader = FileReader("src/main/resources/word_10000.csv")
+        val csvReader = CSVReader(fileReader)
+        val userLevel = UserRatingDependency
+            .values()
+            .findLast { level -> level.rating < getUserRating(chatId) }
+            .toString()
+            .split("_")[1]
+            .toInt() - 1
+        csvReader.skip(userLevel * 9 - 1)
+
+        val wordTranslateList = mutableListOf<StudyWord>()
+
+        var i = 0
+        while (i < 10) {
+            wordTranslateList.add(
+                StudyWord(csvReader.readNext()[0], csvReader.readNext()[1])
+            )
+            i++
+        }
+
+        wordTranslateList.forEach { wordTranslate ->
+            addWordAndTranslate(
+                wordTranslate.word,
+                wordTranslate.translate,
+                chatId
+            )
+        }
+    }
 }

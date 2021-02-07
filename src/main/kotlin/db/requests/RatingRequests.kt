@@ -3,7 +3,7 @@ package db.requests
 import db.Connections
 import db.DbHelper
 import db.requests.UpdateDateRequests.updateLastUpdateDate
-
+import db.requests.UpdateDateRequests.updateUnavailableTo
 
 object RatingRequests {
     fun incrementRating(word: String, chatId: String) {
@@ -22,6 +22,7 @@ object RatingRequests {
         )?.execute()
 
         updateLastUpdateDate(word,chatId)
+        updateUnavailableTo(word,chatId)
     }
 
     fun decrementRating(word: String, chatId: String) {
@@ -40,9 +41,10 @@ object RatingRequests {
         )?.execute()
 
         updateLastUpdateDate(word,chatId)
+        updateUnavailableTo(word,chatId)
     }
 
-    fun getRating(word: String, chatId: String): String {
+    private fun getRating(word: String, chatId: String): String {
         val result = DbHelper.getConnection(Connections.HerokuDb.url)?.prepareStatement(
             "select rating from words where (word = '$word' or translate = '$word') and chat_id = '$chatId'"
         )?.executeQuery()

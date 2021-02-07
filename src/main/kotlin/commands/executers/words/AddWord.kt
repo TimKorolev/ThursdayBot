@@ -6,7 +6,7 @@ import com.ibm.watson.language_translator.v3.LanguageTranslator
 import com.ibm.watson.language_translator.v3.model.TranslateOptions
 import commands.ICommandExecutor
 import commands.executers.BaseExecutor
-import db.requests.DbRequest
+import db.requests.WordsRequest
 import property.Property
 import property.Property.Companion.TRANSLATOR_URL
 
@@ -41,7 +41,7 @@ object AddWord : BaseExecutor(), ICommandExecutor {
                 translate = params[1]
             }
         }
-        return DbRequest.addWordAndTranslate(
+        return WordsRequest.addWordAndTranslate(
             word, translate, chatId
         )
     }

@@ -11,6 +11,7 @@ import db.requests.RatingRequests.incrementRating
 import db.requests.StudyRequests.getStudyWord
 import db.requests.StudyRequests.getStudyWords
 import db.requests.UserRequests.incrementUserRating
+import db.requests.WordsRequest.addWordFromWord10000
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -40,6 +41,8 @@ class Bot : TelegramLongPollingBot() {
                 incrementPollCounter(chatId)
                 sendPoll(chatId)
             } else {
+                sendMsg(chatId, _text = "Poll is over")
+                addWordFromWord10000(chatId)
                 deletePollCounter(chatId)
             }
             return
@@ -60,8 +63,13 @@ class Bot : TelegramLongPollingBot() {
     }
 
     @Synchronized
-    fun sendMsg(chatId: String, executor: BaseExecutor?, commandProperties: List<String>) {
-        val text = executor?.setChatId(chatId)?.execute(commandProperties)
+    fun sendMsg(
+        chatId: String,
+        executor: BaseExecutor? = null,
+        commandProperties: List<String> = listOf(),
+        _text: String? = null
+    ) {
+        val text = _text ?: executor?.setChatId(chatId)?.execute(commandProperties)
 
         val sendMessage = SendMessage()
         sendMessage.enableMarkdown(true)

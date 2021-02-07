@@ -11,8 +11,8 @@ enum class Commands(_commandName: String) {
     companion object {
         fun getCommandByName(name: String?): Commands {
             return try {
-                values().asSequence().find { command -> command.commandName == name }!!
-            } catch (e : Exception){
+                values().asSequence().find { command -> command.commandName.equals(name, true) }!!
+            } catch (e: Exception) {
                 HELP
             }
         }
