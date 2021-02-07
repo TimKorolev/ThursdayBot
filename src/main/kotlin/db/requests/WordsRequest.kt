@@ -31,6 +31,7 @@ object WordsRequest {
             DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
                 "insert into words(word, translate, chat_id, rating, create_date, last_update_date) values ('$word','$translate','$chatId', 0, '$actualDate', '$actualDate')"
             )?.execute()
+            updateUnavailableTo(word, chatId, true)
             "Запомню $word как '$translate'"
         } else {
             updateLastUpdateDate(word, chatId)
@@ -79,8 +80,9 @@ object WordsRequest {
 
         var i = 0
         while (i < 10) {
+            val line = csvReader.readNext()
             wordTranslateList.add(
-                StudyWord(csvReader.readNext()[0], csvReader.readNext()[1])
+                StudyWord(line[0], line[1])
             )
             i++
         }
