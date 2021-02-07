@@ -5,10 +5,7 @@ import bot.BotContext.incrementPollCounter
 import commands.Commands.*
 import commands.executers.BaseExecutor
 import commands.executers.HelpExecutor
-import commands.executers.RemindMeExecutor
-import commands.executers.words.GetNLastWordsExecutor
-import commands.executers.words.GetWordsRatingExecutor
-import commands.executers.words.VocabularyExecutor
+import commands.executers.words.AddWord
 import db.requests.RatingRequests.decrementRating
 import db.requests.RatingRequests.incrementRating
 import db.requests.StudyRequests.getStudyWord
@@ -53,11 +50,8 @@ class Bot : TelegramLongPollingBot() {
         val command = getCommandAndParamsFromMessage(message)
 
         when (command.command) {
-            REMIND_ME -> sendMsg(chatId, RemindMeExecutor, command.params)
-            VOCABULARY -> sendMsg(chatId, VocabularyExecutor, command.params)
-            GET_N_LAST_WORDS -> sendMsg(chatId, GetNLastWordsExecutor, command.params)
-            GET_WORDS_RATING -> sendMsg(chatId, GetWordsRatingExecutor, command.params)
-            START_QUESTIONNAIRE -> {
+            ADD_WORD -> sendMsg(chatId, AddWord, command.params)
+            START_POLL -> {
                 BotContext.addPollCounter(chatId)
                 sendPoll(chatId)
             }
@@ -105,17 +99,6 @@ class Bot : TelegramLongPollingBot() {
 
         BotContext.addPoll(sendPoll)
 
-//        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-//
-//        val keyboard = mutableListOf<InlineKeyboardButton>()
-//        studyWords.map { studyWord -> studyWord.translate }.forEach { option ->
-//            var inlineKeyboardButton = InlineKeyboardButton(option)
-//            inlineKeyboardButton.callbackData = option
-//            keyboard.add(inlineKeyboardButton)
-//        }
-//        inlineKeyboardMarkup.keyboard = listOf(keyboard.toList())
-//
-//        sendPoll.replyMarkup = inlineKeyboardMarkup
         try {
             execute(sendPoll)
         } catch (e: TelegramApiException) {
@@ -131,24 +114,15 @@ class Bot : TelegramLongPollingBot() {
         replyKeyboardMarkup.resizeKeyboard = true
         replyKeyboardMarkup.oneTimeKeyboard = false
 
-        // Создаем список строк клавиатуры
         val keyboard: MutableList<KeyboardRow> = ArrayList()
 
-        // Первая строчка клавиатуры
-        val keyboardFirstRow = KeyboardRow()
-        // Добавляем кнопки в первую строчку клавиатуры
-        keyboardFirstRow.add(KeyboardButton("Покажи последние"))
-        keyboardFirstRow.add(KeyboardButton("Покажи последние"))
-
-        // Вторая строчка клавиатуры
         val keyboardSecondRow = KeyboardRow()
-        // Добавляем кнопки во вторую строчку клавиатуры
-        keyboardSecondRow.add(KeyboardButton("Помощь"))
+        keyboardSecondRow.add(KeyboardButton("statistic"))
+        keyboardSecondRow.add(KeyboardButton("help"))
+        keyboardSecondRow.add(KeyboardButton("settings"))
+        keyboardSecondRow.add(KeyboardButton("report"))
 
-        // Добавляем все строчки клавиатуры в список
-        keyboard.add(keyboardFirstRow)
         keyboard.add(keyboardSecondRow)
-        // и устанваливаем этот список нашей клавиатуре
         replyKeyboardMarkup.keyboard = keyboard
     }
 

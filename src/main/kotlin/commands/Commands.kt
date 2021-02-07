@@ -2,15 +2,9 @@ package commands
 
 enum class Commands(_commandName: String) {
 
-    START_QUESTIONNAIRE("Начать опрос"),
-    REMIND_ME("Напомни мне"),
-    VOCABULARY("Запомни слово"),
-    ALCOHOL("Запомни алкоголь"),
-    GET_ALCOHOL("Найди алкоголь"),
-    ALCOHOL_RATING("Алкогольный рейтинг"),
-    HELP("Помощь"),
-    GET_N_LAST_WORDS("Покажи последние"),
-    GET_WORDS_RATING("Покажи рейтинг");
+    START_POLL("startPoll"),
+    ADD_WORD("addWord"),
+    HELP("help");
 
     val commandName: String = _commandName
 
