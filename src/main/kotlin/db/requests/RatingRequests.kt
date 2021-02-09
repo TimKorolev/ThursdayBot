@@ -8,14 +8,12 @@ import db.requests.UpdateDateRequests.updateUnavailableTo
 object RatingRequests {
     fun incrementRating(word: String, chatId: String) {
         var rating = getRating(word, chatId)
-        var intRating = rating.toInt()
 
-        if (intRating > 9) {
+        if (rating > 8) {
             return
         }
 
-        intRating++
-        rating = intRating.toString()
+        rating++
 
         DbHelper.getConnection(Connections.HerokuDb.url)?.prepareStatement(
             "update words set rating = '$rating' where (word = '$word' or translate = '$word')"
@@ -27,14 +25,12 @@ object RatingRequests {
 
     fun decrementRating(word: String, chatId: String) {
         var rating = getRating(word, chatId)
-        var intRating = rating.toInt()
 
-        if (intRating == 0) {
+        if (rating == 0) {
             return
         }
 
-        intRating--
-        rating = intRating.toString()
+        rating--
 
         DbHelper.getConnection(Connections.HerokuDb.url)?.prepareStatement(
             "update words set rating = '$rating' where (word = '$word' or translate = '$word')"
@@ -44,12 +40,12 @@ object RatingRequests {
         updateUnavailableTo(word,chatId)
     }
 
-    private fun getRating(word: String, chatId: String): String {
+    fun getRating(word: String, chatId: String): Int {
         val result = DbHelper.getConnection(Connections.HerokuDb.url)?.prepareStatement(
             "select rating from words where (word = '$word' or translate = '$word') and chat_id = '$chatId'"
         )?.executeQuery()
 
         result!!.next()
-        return result.getString("rating").toString()
+        return result.getString("rating").toInt()
     }
 }

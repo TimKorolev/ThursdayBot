@@ -20,8 +20,11 @@ object StudyRequests {
         val selectionSize = ceil(WordsRequest.getNumberOfWord(chatId) * 0.1).toInt() + 1
         val result =
             DbHelper.getConnection(Connections.HerokuDb.url)
-                ?.prepareStatement("select word,translate from words where chat_id = '$chatId' and unavailable_to < '${
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}' order by rating limit $selectionSize")
+                ?.prepareStatement(
+                    "select word,translate from words where chat_id = '$chatId' and unavailable_to < '${
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    }' order by rating limit $selectionSize"
+                )
                 ?.executeQuery()
 
         val words = mutableListOf<StudyWord>()
@@ -44,20 +47,23 @@ object StudyRequests {
 
         val result =
             DbHelper.getConnection(Connections.HerokuDb.url)
-                ?.prepareStatement("select word,translate from words where chat_id = '$chatId' and unavailable_to < '${
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}' order by random() limit 3")
+                ?.prepareStatement(
+                    "select word,translate from words where chat_id = '$chatId' and unavailable_to < '${
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    }' order by random() limit 4"
+                ) // poll size
                 ?.executeQuery()
 
         val words = mutableListOf<StudyWord>()
 
-        while (result!!.next()) {
-            words.add(
-                StudyWord(
-                    result.getString("word"),
-                    result.getString("translate")
+            while (result!!.next()) {
+                words.add(
+                    StudyWord(
+                        result.getString("word"),
+                        result.getString("translate")
+                    )
                 )
-            )
-        }
+            }
 
         return words
     }

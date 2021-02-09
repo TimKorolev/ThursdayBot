@@ -4,6 +4,7 @@ enum class Commands(_commandName: String) {
 
     START_POLL("startPoll"),
     ADD_WORD("addWord"),
+    STATISTICS("statistics"),
     HELP("help");
 
     val commandName: String = _commandName
@@ -13,7 +14,7 @@ enum class Commands(_commandName: String) {
             return try {
                 values().asSequence().find { command -> command.commandName.equals(name, true) }!!
             } catch (e: Exception) {
-                HELP
+                ADD_WORD
             }
         }
     }

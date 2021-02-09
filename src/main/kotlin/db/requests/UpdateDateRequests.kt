@@ -25,10 +25,17 @@ object UpdateDateRequests {
         DbHelper.getConnection(Connections.HerokuDb.url)?.prepareStatement(
             "update words " +
                     "set unavailable_to = '${
-                        if (!now) {
-                            LocalDateTime.now().plusHours(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                        } else {
+                        if (now) {
                             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        } else {
+                            when (RatingRequests.getRating(word, chatId)) {
+                                6 -> LocalDateTime.now().plusMonths(1)
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                5 -> LocalDateTime.now().plusWeeks(1)
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                else -> LocalDateTime.now().plusDays(1)
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            }
                         }
                     }' " +
                     "where (word = '$word' or translate = '$word')" +

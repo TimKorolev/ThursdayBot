@@ -37,8 +37,8 @@ object AddWord : BaseExecutor(), ICommandExecutor {
                     "\"\n" + "    }"
                 )[0]
             }
-            2 -> {
-                translate = params[1]
+            3 -> {
+                translate = params[2]
             }
         }
         return WordsRequest.addWordAndTranslate(

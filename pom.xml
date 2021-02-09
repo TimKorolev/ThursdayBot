@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.knowm.xchart</groupId>
+            <artifactId>xchart</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.3</version>

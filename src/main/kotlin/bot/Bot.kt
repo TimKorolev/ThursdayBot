@@ -6,6 +6,7 @@ import commands.Commands.*
 import commands.executers.BaseExecutor
 import commands.executers.HelpExecutor
 import commands.executers.words.AddWord
+import commands.replayKeyboardMarkup.Keyboards.getDefaultKeyboard
 import db.requests.RatingRequests.decrementRating
 import db.requests.RatingRequests.incrementRating
 import db.requests.StudyRequests.getStudyWord
@@ -17,10 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.polls.SendPoll
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
-import java.util.*
 import kotlin.random.Random
 
 class Bot : TelegramLongPollingBot() {
@@ -37,12 +35,17 @@ class Bot : TelegramLongPollingBot() {
                 decrementRating(update.poll.options[update.poll.correctOptionId].text, chatId)
                 decrementRating(update.poll.options.filter { option -> option.voterCount == 1 }[0].text, chatId)
             }
-            if (BotContext.getPollCounter(chatId) < 5) {
+            if (BotContext.getPollCounter(chatId) < 10) {
                 incrementPollCounter(chatId)
                 sendPoll(chatId)
             } else {
                 sendMsg(chatId, _text = "Poll is over")
-                addWordFromWord10000(chatId)
+                val addedWords = addWordFromWord10000(chatId)
+                if(addedWords.isNotEmpty()){
+                    sendMsg(chatId, _text = "New words: \n " + addedWords.toString()
+                        .replace(",",",\n")
+                        .replace("The word", ""))
+                }
                 deletePollCounter(chatId)
             }
             return
@@ -53,12 +56,13 @@ class Bot : TelegramLongPollingBot() {
         val command = getCommandAndParamsFromMessage(message)
 
         when (command.command) {
-            ADD_WORD -> sendMsg(chatId, AddWord, command.params)
+            HELP -> sendMsg(chatId, HelpExecutor, command.params)
             START_POLL -> {
                 BotContext.addPollCounter(chatId)
                 sendPoll(chatId)
             }
-            else -> sendMsg(chatId, HelpExecutor, command.params)
+//            STATISTICS -> sendMsg(chatId, _text = "Сhoose parameters", replyKeyboardMarkup = getStatisticsKeyboard())
+            ADD_WORD -> sendMsg(chatId, AddWord, command.params)
         }
     }
 
@@ -67,7 +71,8 @@ class Bot : TelegramLongPollingBot() {
         chatId: String,
         executor: BaseExecutor? = null,
         commandProperties: List<String> = listOf(),
-        _text: String? = null
+        _text: String? = null,
+        replyKeyboardMarkup: ReplyKeyboardMarkup? = null
     ) {
         val text = _text ?: executor?.setChatId(chatId)?.execute(commandProperties)
 
@@ -75,6 +80,7 @@ class Bot : TelegramLongPollingBot() {
         sendMessage.enableMarkdown(true)
         sendMessage.chatId = chatId
         sendMessage.text = text
+        if (replyKeyboardMarkup != null) sendMessage.replyMarkup = replyKeyboardMarkup
         setButtons(sendMessage)
         try {
             execute(sendMessage)
@@ -92,7 +98,7 @@ class Bot : TelegramLongPollingBot() {
             studyWords = getStudyWords(chatId)
         }
 
-        val rightAnswer = Random.nextInt(0, studyWords.size)
+        val rightAnswer = Random.nextInt(0, studyWords.size + 1)
 
         studyWords.add(rightAnswer, studyWord)
 
@@ -102,7 +108,7 @@ class Bot : TelegramLongPollingBot() {
         sendPoll.options = studyWords.map { studyWord -> studyWord.translate }
         sendPoll.type = "quiz"
         sendPoll.correctOptionId = rightAnswer
-        sendPoll.openPeriod = 60
+        sendPoll.openPeriod = 15
         sendPoll.replyMarkup
 
         BotContext.addPoll(sendPoll)
@@ -116,22 +122,9 @@ class Bot : TelegramLongPollingBot() {
 
     @Synchronized
     fun setButtons(sendMessage: SendMessage) {
-        val replyKeyboardMarkup = ReplyKeyboardMarkup()
-        sendMessage.replyMarkup = replyKeyboardMarkup
-        replyKeyboardMarkup.selective = true
-        replyKeyboardMarkup.resizeKeyboard = true
-        replyKeyboardMarkup.oneTimeKeyboard = false
-
-        val keyboard: MutableList<KeyboardRow> = ArrayList()
-
-        val keyboardSecondRow = KeyboardRow()
-        keyboardSecondRow.add(KeyboardButton("statistic"))
-        keyboardSecondRow.add(KeyboardButton("help"))
-        keyboardSecondRow.add(KeyboardButton("settings"))
-        keyboardSecondRow.add(KeyboardButton("report"))
-
-        keyboard.add(keyboardSecondRow)
-        replyKeyboardMarkup.keyboard = keyboard
+        if (sendMessage.replyMarkup == null) {
+            sendMessage.replyMarkup = getDefaultKeyboard()
+        }
     }
 
     /**
