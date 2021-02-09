@@ -70,7 +70,7 @@ object WordsRequest {
             .toString()
             .split("_")[1]
             .toInt() - 1
-        csvReader.skip(userLevel * 9 - 1)
+        csvReader.skip(userLevel * 9)
 
         val wordTranslateList = mutableListOf<StudyWord>()
 
@@ -95,7 +95,6 @@ object WordsRequest {
             )
         }
 
-        addedWords.filter { string -> string.contains("means") }
-        return addedWords
+        return addedWords.filter { string -> string.contains("means") }.toMutableList()
     }
 }

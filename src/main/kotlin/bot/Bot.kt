@@ -6,7 +6,7 @@ import commands.Commands.*
 import commands.executers.BaseExecutor
 import commands.executers.HelpExecutor
 import commands.executers.words.AddWord
-import commands.replayKeyboardMarkup.Keyboards.getDefaultKeyboard
+import replayKeyboardMarkup.Keyboards.getDefaultKeyboard
 import db.requests.RatingRequests.decrementRating
 import db.requests.RatingRequests.incrementRating
 import db.requests.StudyRequests.getStudyWord
@@ -42,9 +42,11 @@ class Bot : TelegramLongPollingBot() {
                 sendMsg(chatId, _text = "Poll is over")
                 val addedWords = addWordFromWord10000(chatId)
                 if(addedWords.isNotEmpty()){
-                    sendMsg(chatId, _text = "New words: \n " + addedWords.toString()
+                    sendMsg(chatId, _text = ("New words: \n " + addedWords.toString())
                         .replace(",",",\n")
-                        .replace("The word", ""))
+                        .replace("The word", "")
+                        .replace("Add word", "")
+                    )
                 }
                 deletePollCounter(chatId)
             }
