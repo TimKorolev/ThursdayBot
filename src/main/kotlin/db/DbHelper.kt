@@ -11,7 +11,7 @@ object DbHelper {
 
     fun getConnection(url: String): Connection? {
         try {
-            if (connectionPool[url] == null) {
+            if (connectionPool[url] == null || connectionPool[url]?.isClosed == true) {
                 Class.forName("org.postgresql.Driver")
                 connection = DriverManager.getConnection(url)
                 connectionPool[url] = connection
