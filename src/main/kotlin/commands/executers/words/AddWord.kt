@@ -14,7 +14,7 @@ import property.Property.Companion.TRANSLATOR_URL
 object AddWord : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
-        val word = params[0]
+        val word = params[0].toLowerCase().replace("_"," ")
         var translate = ""
         when (params.size) {
             1 -> {
@@ -35,10 +35,13 @@ object AddWord : BaseExecutor(), ICommandExecutor {
                 translate = languageTranslator.translate(translateOptions)
                     .execute().result.toString().split("\"translation\": \"")[1].split(
                     "\"\n" + "    }"
-                )[0]
+                )[0].toLowerCase()
             }
             3 -> {
                 translate = params[2]
+                    .toLowerCase()
+                    .replace("_"," ")
+                    .replace(",",", ")
             }
         }
         return WordsRequest.addWordAndTranslate(

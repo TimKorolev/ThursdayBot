@@ -12,7 +12,7 @@ import kotlin.random.Random
 
 object StudyRequests {
 
-    fun getStudyWord(chatId: String): StudyWord {
+    fun getStudyWord(chatId: String, isInverted: Boolean = false): StudyWord {
         if (!isUserExist(chatId)) {
             addUser(chatId)
         }
@@ -31,16 +31,23 @@ object StudyRequests {
 
         while (result!!.next()) {
             words.add(
-                StudyWord(
-                    result.getString("word"),
-                    result.getString("translate")
-                )
+                if (!isInverted) {
+                    StudyWord(
+                        result.getString("word"),
+                        result.getString("translate")
+                    )
+                } else {
+                    StudyWord(
+                        result.getString("translate"),
+                        result.getString("word")
+                    )
+                }
             )
         }
         return words[Random.nextInt(0, words.size - 1)]
     }
 
-    fun getStudyWords(chatId: String): MutableList<StudyWord> {
+    fun getStudyWords(chatId: String, isInverted: Boolean = false): MutableList<StudyWord> {
         if (!isUserExist(chatId)) {
             addUser(chatId)
         }
@@ -56,14 +63,21 @@ object StudyRequests {
 
         val words = mutableListOf<StudyWord>()
 
-            while (result!!.next()) {
-                words.add(
+        while (result!!.next()) {
+            words.add(
+                if (!isInverted) {
                     StudyWord(
                         result.getString("word"),
                         result.getString("translate")
                     )
-                )
-            }
+                } else {
+                    StudyWord(
+                        result.getString("translate"),
+                        result.getString("word")
+                    )
+                }
+            )
+        }
 
         return words
     }

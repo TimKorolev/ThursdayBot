@@ -94,7 +94,6 @@ object WordsRequest {
                 )
             )
         }
-
-        return addedWords.filter { string -> string.contains("means") }.toMutableList()
+        return addedWords.filterNot { string -> string.contains("means") }.toMutableList()
     }
 }

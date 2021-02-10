@@ -33,7 +33,9 @@ object UpdateDateRequests {
                                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                                 5 -> LocalDateTime.now().plusWeeks(1)
                                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                                else -> LocalDateTime.now().plusDays(1)
+                                4 -> LocalDateTime.now().plusDays(1)
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                else -> LocalDateTime.now().plusHours(1)
                                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                             }
                         }

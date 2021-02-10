@@ -41,11 +41,11 @@ class Bot : TelegramLongPollingBot() {
             } else {
                 sendMsg(chatId, _text = "Poll is over")
                 val addedWords = addWordFromWord10000(chatId)
-                if(addedWords.isNotEmpty()){
-                    sendMsg(chatId, _text = ("New words: \n " + addedWords.toString())
-                        .replace(",",",\n")
-                        .replace("The word", "")
-                        .replace("Add word", "")
+                if (addedWords.isNotEmpty()) {
+                    sendMsg(
+                        chatId, _text = ("New words: \n " + addedWords.toString())
+                            .replace(",", ",\n")
+                            .replace("Add word", "")
                     )
                 }
                 deletePollCounter(chatId)
@@ -93,8 +93,10 @@ class Bot : TelegramLongPollingBot() {
 
     @Synchronized
     fun sendPoll(chatId: String) {
-        val studyWord = getStudyWord(chatId)
-        var studyWords = getStudyWords(chatId)
+        var isInverted: Boolean = Random.nextBoolean()
+
+        val studyWord = getStudyWord(chatId, isInverted)
+        var studyWords = getStudyWords(chatId, isInverted)
 
         while (studyWord in studyWords) {
             studyWords = getStudyWords(chatId)

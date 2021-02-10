@@ -8,7 +8,10 @@ object HelpExecutor : BaseExecutor(), ICommandExecutor {
     override fun execute(params: List<String>): String {
 
         return """Commands:
-<word> as (<custom translate>)
+1) <word> (as (<custom translate>))
+    - use \_ for compound word
+    - use (<custom translate>),(<custom translate>) for multiple meanings
+2) help
 """
     }
 
