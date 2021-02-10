@@ -93,13 +93,13 @@ class Bot : TelegramLongPollingBot() {
 
     @Synchronized
     fun sendPoll(chatId: String) {
-        var isInverted: Boolean = Random.nextBoolean()
+        val isInverted: Boolean = Random.nextBoolean()
 
         val studyWord = getStudyWord(chatId, isInverted)
         var studyWords = getStudyWords(chatId, isInverted)
 
         while (studyWord in studyWords) {
-            studyWords = getStudyWords(chatId)
+            studyWords = getStudyWords(chatId, isInverted)
         }
 
         val rightAnswer = Random.nextInt(0, studyWords.size + 1)
