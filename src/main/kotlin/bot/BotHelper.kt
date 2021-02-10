@@ -11,7 +11,7 @@ fun getCommandAndParamsFromMessage(message: String): Command {
     val params = if (command == ADD_WORD) {
         messageArray
     } else {
-        messageArray.drop(1)
+        messageArray.drop(0)
     }
 
     return Command(command, params)

@@ -41,6 +41,24 @@ object WordsRequest {
         }
     }
 
+    fun deleteWord(_word: String, chatId: String): String {
+
+        val word = _word.toLowerCase()
+
+        if (!isUserExist(chatId)) {
+            addUser(chatId)
+        }
+
+        return if (isWordExist(word, chatId)) {
+            DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
+                "delete from words where word = '$word' and chat_id = '$chatId'"
+            )?.execute()
+            "The word '$word' was deleted"
+        } else {
+            "The word '$word' not found"
+        }
+    }
+
     fun getNumberOfWord(chatId: String): Double {
         val result =
             DbHelper.getConnection(HerokuDb.url)?.prepareStatement(

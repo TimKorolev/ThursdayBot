@@ -4,6 +4,7 @@ enum class Commands(_commandName: String) {
 
     START_POLL("startPoll"),
     ADD_WORD("addWord"),
+    DELETE("delete"),
     STATISTICS("statistics"),
     HELP("help");
 

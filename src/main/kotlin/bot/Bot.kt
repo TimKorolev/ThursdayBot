@@ -6,6 +6,7 @@ import commands.Commands.*
 import commands.executers.BaseExecutor
 import commands.executers.HelpExecutor
 import commands.executers.words.AddWord
+import commands.executers.words.DeleteWord
 import replayKeyboardMarkup.Keyboards.getDefaultKeyboard
 import db.requests.RatingRequests.decrementRating
 import db.requests.RatingRequests.incrementRating
@@ -59,6 +60,7 @@ class Bot : TelegramLongPollingBot() {
 
         when (command.command) {
             HELP -> sendMsg(chatId, HelpExecutor, command.params)
+            DELETE -> sendMsg(chatId, DeleteWord, command.params)
             START_POLL -> {
                 BotContext.addPollCounter(chatId)
                 sendPoll(chatId)

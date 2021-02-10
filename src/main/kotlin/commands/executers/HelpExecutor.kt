@@ -12,6 +12,7 @@ object HelpExecutor : BaseExecutor(), ICommandExecutor {
     - use \_ for compound word
     - use (<custom translate>),(<custom translate>) for multiple meanings
 2) help
+3) delete <word>
 """
     }
 
