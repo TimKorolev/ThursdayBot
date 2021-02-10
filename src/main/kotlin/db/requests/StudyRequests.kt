@@ -6,6 +6,7 @@ import db.entities.StudyWord
 import db.requests.UserRequests.addUser
 import db.requests.UserRequests.isUserExist
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.math.ceil
 import kotlin.random.Random
@@ -22,7 +23,7 @@ object StudyRequests {
             DbHelper.getConnection(Connections.HerokuDb.url)
                 ?.prepareStatement(
                     "select word,translate from words where chat_id = '$chatId' and unavailable_to < '${
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        LocalDateTime.now(ZoneId.of("Europe/Moscow")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                     }' order by rating limit $selectionSize"
                 )
                 ?.executeQuery()
@@ -56,7 +57,7 @@ object StudyRequests {
             DbHelper.getConnection(Connections.HerokuDb.url)
                 ?.prepareStatement(
                     "select word,translate from words where chat_id = '$chatId' and unavailable_to < '${
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        LocalDateTime.now(ZoneId.of("Europe/Moscow")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                     }' order by random() limit 4"
                 ) // poll size
                 ?.executeQuery()
