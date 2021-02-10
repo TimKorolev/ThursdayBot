@@ -98,7 +98,7 @@ class Bot : TelegramLongPollingBot() {
         val studyWord = getStudyWord(chatId, isInverted)
         var studyWords = getStudyWords(chatId, isInverted)
 
-        while (studyWord in studyWords) {
+        while (studyWord.word in studyWords.map { studyWord -> studyWord.word }.toMutableList()) {
             studyWords = getStudyWords(chatId, isInverted)
         }
 

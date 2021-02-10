@@ -18,7 +18,11 @@ import java.time.format.DateTimeFormatter
 
 object WordsRequest {
 
-    fun addWordAndTranslate(word: String, translate: String, chatId: String): String {
+    fun addWordAndTranslate(_word: String, _translate: String, chatId: String): String {
+
+        val word = _word.toLowerCase()
+        val translate = _translate.toLowerCase()
+
         if (!isUserExist(chatId)) {
             addUser(chatId)
         }
@@ -47,7 +51,8 @@ object WordsRequest {
         return result.getString("count").toDouble()
     }
 
-    private fun isWordExist(word: String, chatId: String): Boolean {
+    private fun isWordExist(_word: String, chatId: String): Boolean {
+        val word = _word.toLowerCase()
         var rows = 0
         val result =
             DbHelper.getConnection(HerokuDb.url)
@@ -75,7 +80,7 @@ object WordsRequest {
         val wordTranslateList = mutableListOf<StudyWord>()
 
         var i = 0
-        while (i < 10) {
+        while (i < 11) {
             val line = csvReader.readNext()
             wordTranslateList.add(
                 StudyWord(line[0], line[1])
