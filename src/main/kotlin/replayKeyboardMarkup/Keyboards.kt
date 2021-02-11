@@ -32,6 +32,7 @@ object Keyboards {
         val keyboardSecondRow = KeyboardRow()
         keyboardSecondRow.add(KeyboardButton("startPoll"))
         keyboardSecondRow.add(KeyboardButton("help"))
+        keyboardSecondRow.add(KeyboardButton("statistics"))
 
         keyboard.add(keyboardSecondRow)
         replyKeyboardMarkup.keyboard = keyboard

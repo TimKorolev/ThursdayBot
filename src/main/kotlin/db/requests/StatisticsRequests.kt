@@ -3,7 +3,7 @@ package db.requests
 import db.Connections
 import db.DbHelper
 
-object Statistics {
+object StatisticsRequests {
     fun getTimeVsNewWords(chatId: String): Map<MutableList<String>, MutableList<String>> {
         val result = DbHelper.getConnection(Connections.HerokuDb.url)?.prepareStatement(
             "select word, create_date from words where (chat_id = '$chatId')"

@@ -28,7 +28,8 @@ object WordsRequest {
         if (!isUserExist(chatId)) {
             addUser(chatId)
         }
-        val actualDate = LocalDateTime.now(ZoneId.of("Europe/Moscow")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val actualDate =
+            LocalDateTime.now(ZoneId.of("Europe/Moscow")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         return if (!isWordExist(word, chatId)) {
             DbHelper.getConnection(HerokuDb.url)?.prepareStatement(
                 "insert into words(word, translate, chat_id, rating, create_date, last_update_date) values ('$word','$translate','$chatId', 0, '$actualDate', '$actualDate')"

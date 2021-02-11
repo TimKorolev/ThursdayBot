@@ -3,7 +3,7 @@ package commands.executers
 import commands.ICommandExecutor
 
 
-object HelpExecutor : BaseExecutor(), ICommandExecutor {
+object Help : BaseExecutor(), ICommandExecutor {
 
     override fun execute(params: List<String>): String {
 

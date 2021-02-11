@@ -4,7 +4,8 @@ import bot.BotContext.deletePollCounter
 import bot.BotContext.incrementPollCounter
 import commands.Commands.*
 import commands.executers.BaseExecutor
-import commands.executers.HelpExecutor
+import commands.executers.Help
+import commands.executers.Statistics
 import commands.executers.words.AddWord
 import commands.executers.words.DeleteWord
 import replayKeyboardMarkup.Keyboards.getDefaultKeyboard
@@ -59,13 +60,13 @@ class Bot : TelegramLongPollingBot() {
         val command = getCommandAndParamsFromMessage(message)
 
         when (command.command) {
-            HELP -> sendMsg(chatId, HelpExecutor, command.params)
+            HELP -> sendMsg(chatId, Help, command.params)
             DELETE -> sendMsg(chatId, DeleteWord, command.params)
             START_POLL -> {
                 BotContext.addPollCounter(chatId)
                 sendPoll(chatId)
             }
-//            STATISTICS -> sendMsg(chatId, _text = "Сhoose parameters", replyKeyboardMarkup = getStatisticsKeyboard())
+            STATISTICS -> sendMsg(chatId, Statistics,command.params)
             ADD_WORD -> sendMsg(chatId, AddWord, command.params)
         }
     }
